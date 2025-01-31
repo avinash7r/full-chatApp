@@ -11,19 +11,19 @@ export const registerUser = async (req, res) => {
         if (req.body.password.length < 6) {
             return res.status(400).json({ message: "Password should be at least 6 characters" });
         }
-        const existingUser=await User.findOne({email:req.body.email});
+        const existingUser = await User.findOne({ email: req.body.email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" });
         }
-        const hashPassword=await bcrypt.hash(req.body.password,10);
-        const newUser=new User({
-            username:req.body.username,
-            email:req.body.email,
-            password:hashPassword,
-        })
-        if (newUser){
-            createToken(newUser._id,res);
+        const hashPassword = await bcrypt.hash(req.body.password, 10);
+        const newUser = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: hashPassword,
+        });
+        try {
             await newUser.save();
+            createToken(newUser._id, res);
             return res.status(201).json({
                 message: "User created successfully",
                 user: {
@@ -32,8 +32,9 @@ export const registerUser = async (req, res) => {
                     email: newUser.email
                 }
             });
-        }else{
-            return res.status(400).json({ message: "User not created" });
+        } catch (error) {
+            console.error("Error saving new user:", error);
+            return res.status(500).json({ message: "Error creating user" });
         }
 
     } catch (error) {
@@ -83,15 +84,13 @@ export const logoutUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
-        profilePic=req.body;
-        if (!profilePic) {
+        const recProfilePic=req.body;
+        if (!recProfilePic) {
             return res.status(400).json({ message: "Please provide a profile picture" });
         }
-        const cloudinaryResponse=await cloudinary.uploader.upload(profilePic)
+        const cloudinaryResponse=await cloudinary.uploader.upload(recProfilePic.profileImage)
         const user=await User.findByIdAndUpdate(req.user._id,{profilePic:cloudinaryResponse.secure_url},{new:true});
-        res.status(200).json({
-            message: "Profile picture updated successfully",
-        });
+        return res.status(200).json(user);
     } catch (error) {
         console.log(`Error: ${error.message}`);
         res.status(500).json({ message: "Server error updating Profile" });

@@ -8,7 +8,7 @@ router.post("/register",registerUser);
 router.post("/login",loginUser);
 router.post("/logout",logoutUser);
 
-router.post("/update",authMiddleware,updateUser);
+router.put("/update",authMiddleware,updateUser);
 router.get("/check",authMiddleware,checkAuth);
 
 export {router};

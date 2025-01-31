@@ -1,45 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMsgStore } from '../store/useMsgStore';
-import { useEffect ,useState } from 'react';
 import { User } from 'lucide-react';
 
 const Sidebar = () => {
-    const {getUsers,users,selectedUser,selectUser}=useMsgStore()
-    useEffect(()=>{
-        getUsers()
-    },[])
-    const [onLineUsers,setOnLineUsers]=useState([])
-  return (
-    <aside className="h-screen w-64 bg-gray-800 p-4">
-        <div className="flex items-center justify-between border-b-2 pb-4">
-            {/* here there will be a users logo and a text as contacts */}
-            <User className='text-gray-300'/>
-            <span className="text-gray-300">Contacts</span>
-        </div>
-        <div className="mt-4">
-            {/* here there will be multuple templates showing diffrent users from an function */}
-            {
-                users.map((user)=>{
-                    const isSelected=user._id===selectedUser?._id
+    const { getUsers, users, selectedUser, selectUser } = useMsgStore();
+    useEffect(() => {
+        getUsers();
+    }, [getUsers]);
+    const [onlineUsers, setOnlineUsers] = useState([]);
+
+    return (
+        <aside className="h-full w-64 bg-gray-900 text-white flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <div className="flex items-center gap-2">
+                    <User className="text-gray-300" />
+                    <span className="font-semibold">Contacts</span>
+                </div>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+                {users.map((user) => {
+                    const isSelected = user._id === selectedUser?._id;
+                    const isOnline = onlineUsers.some((u) => u._id === user._id);
                     return (
-                        <div key={user._id} className={`flex items-center p-2 hover:bg-gray-700 cursor-pointer ${isSelected?"bg-gray-700":""}`} onClick={()=>selectUser(user)}>
-                            {/* here we will displat the image and the username */}
-                            <div className="w-12 h-12 mr-4">
-                                <img src={user.profilePic || "/avatar.png"} alt="" className="w-full h-full rounded-full"/>
+                        <div
+                            key={user._id}
+                            className={`flex items-center p-3 cursor-pointer transition-colors ${
+                                isSelected ? 'bg-gray-700' : 'hover:bg-gray-800'
+                            }`}
+                            onClick={() => selectUser(user)}
+                        >
+                            <div className="relative">
+                                <img
+                                    src={user.profilePic || '/avatar.png'}
+                                    alt={user.username}
+                                    className="w-12 h-12 rounded-full object-cover"
+                                />
+                                {isOnline && (
+                                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-900"></span>
+                                )}
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-gray-300 mb-1">{user.username}</span>
-                                {
-                                    onLineUsers?._id===user._id ? <span className="text-green-500 text-sm">Online</span>:<span className="text-red-500 text-sm">Offline</span>
-                                }
+                            <div className="ml-3">
+                                <span className="font-medium">{user.username}</span>
+                                <div className="text-sm text-gray-400">
+                                    {isOnline ? 'Online' : 'Offline'}
+                                </div>
                             </div>
                         </div>
-                    )
-                })
-            }
-        </div>
-    </aside>
-  )
-}
+                    );
+                })}
+                {users.length === 0 && (
+                    <div className="text-center text-gray-500 py-4">No users available</div>
+                )}
+            </div>
+        </aside>
+    );
+};
 
-export default Sidebar
+export default Sidebar;

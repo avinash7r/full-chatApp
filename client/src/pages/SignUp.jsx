@@ -1,16 +1,18 @@
 import { React, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { axiosInstance } from '../lib/axiosInstance'
-
+import { axiosInstance } from '../lib/axiosInstance.js'
+import { useAuthStore } from '../store/useAuthStore.js'
 const SignUp = () => {
+  const { authCheck } = useAuthStore()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = axiosInstance.post('/auth/register', { username, email, password })
+      const res =await axiosInstance.post('/auth/register', { username, email, password })
       console.log(res)
+      await authCheck()
     } catch (error) {
       console.log(error)
     }

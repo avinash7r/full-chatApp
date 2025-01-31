@@ -25,7 +25,6 @@ export const useMsgStore = create((set,get)=>({
         try {
             const res=await axiosInstance.get(`/message/${id}`)
             set({messages:res.data})
-            toast.success("Messages fetched")
         } catch (error) {
             toast.error("Messages fetch failed")
             console.log(error)

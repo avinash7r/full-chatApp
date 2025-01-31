@@ -1,45 +1,42 @@
-import React, { useState } from 'react'
-import { useMsgStore } from '../store/useMsgStore.js'
-import { axiosInstance } from '../lib/axiosInstance.js'
-import { Send } from 'lucide-react'
+import React, { useState } from 'react';
+import { useMsgStore } from '../store/useMsgStore';
+import { Send } from 'lucide-react';
 
-const Msginput = () => {
-  const { selectedUser,messages,setMessages,sendMessage } = useMsgStore()
-  
-  const [text,setText]=useState('')
+const MsgInput = () => {
+    const { sendMessage, selectedUser } = useMsgStore();
+    const [message, setMessage] = useState('');
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault()
-    try {
-      if (text.trim() && selectedUser) {
-        await sendMessage(text)
-        setText('')
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+    const handleSend = () => {
+        if (message.trim() && selectedUser) {
+            sendMessage(message, selectedUser._id);
+            setMessage('');
+        }
+    };
 
-  return (
-    <div className="fixed bottom-0 left-0 right-0 w-full p-4 bg-gray-800 border-t border-gray-700 flex flex-col">
-      <div className='w-full flex items-center justify-center'>
-      <form className='w-full'>
-      <div className="relative w-full">
-        <input 
-          type="text" 
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className='w-full h-10 rounded-lg bg-gray-700 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500' 
-          placeholder='Type your message' 
-        />
-        <button onClick={handleSendMessage} className="absolute right-2 top-1/2 transform -translate-y-1/2">
-          <Send size={20} />
-        </button>
-      </div>
-      </form>
-      </div>
-    </div>
-  )
-}
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSend();
+        }
+    };
 
-export default Msginput
+    return (
+        <div className="p-4 bg-gray-900 border-t border-gray-700 flex items-center">
+            <input
+                type="text"
+                className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg focus:outline-none"
+                placeholder="Type your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+            />
+            <button
+                className="ml-4 bg-blue-600 p-2 rounded-full hover:bg-blue-700 transition-colors"
+                onClick={handleSend}
+            >
+                <Send className="text-white" />
+            </button>
+        </div>
+    );
+};
+
+export default MsgInput;

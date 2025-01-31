@@ -6,8 +6,7 @@ dotenv.config();
 
 const connectDB = async () =>{
     try {
-        const conn=await mongoose.connect("mongodb+srv://rajureavinash7:avinash7@cluster0.rl0tx.mongodb.net/chatApp?retryWrites=true&w=majority&appName=Cluster0");
-        console.log(`MongoDB connected: ${conn.connection.host}`);
+        
     } catch (error) {
         console.error(`Error: ${error.message}`);
     }

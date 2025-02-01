@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import {useAuthStore} from './store/useAuthStore.js'
 import {Loader} from 'lucide-react'
 import { Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 
 import HomePage from './pages/HomePage.jsx'
 import Login from './pages/Login.jsx'
@@ -17,12 +18,17 @@ function App() {
 
   useEffect(() => {
     authCheck();
-  });
+  },[authCheck]);
 
-  if(isCheckingAuth && !authUser){
-    <div className="flex justify-center items-center h-screen">
-      <Loader className='size-10 animate-spin' />
-    </div>
+  useEffect(() => {
+  }, [authUser]);
+
+  if(isCheckingAuth) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader className='size-10 animate-spin' />
+      </div>
+    );
   }
 
   return (
@@ -35,6 +41,8 @@ function App() {
       <Route path="/Profile" element={authUser ? <Profile /> : <Navigate to="/login" />} />
       <Route path="/Setting" element={<Setting />} />
     </Routes>
+    <Toaster />
+
     </>
   )
 }

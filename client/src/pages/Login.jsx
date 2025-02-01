@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { axiosInstance } from '../lib/axiosInstance.js'
-import toast, { Toaster } from 'react-hot-toast';
+import { useAuthStore } from '../store/useAuthStore.js'
+import { Toaster, toast } from 'react-hot-toast'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  
+  const { authCheck } = useAuthStore()
 
   const validateForm = () => {
     if (!email) {
@@ -26,8 +29,8 @@ const Login = () => {
 
     try {
       const res = await axiosInstance.post('/auth/login', { email, password })
+      await authCheck()
       toast.success("Logged in successfully")
-      console.log(res)
     } catch (error) {
       toast.error("Login failed")
       console.log(error)

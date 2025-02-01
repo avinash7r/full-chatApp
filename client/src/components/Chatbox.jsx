@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useMsgStore } from '../store/useMsgStore';
 import Msginput from './Msginput.jsx';
-
+import { X } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
 const ChatBox = () => {
-    const { messages, selectedUser, getMessages } = useMsgStore();
+    const { messages, selectedUser, getMessages,selectUser,listenToMessages,stopListeningToMessages } = useMsgStore();
+    const {onlineUsers}=useAuthStore()
     const chatEndRef = useRef(null);
 
     useEffect(() => {
@@ -15,8 +17,13 @@ const ChatBox = () => {
     useEffect(() => {
         if (selectedUser?._id) {
             getMessages(selectedUser._id);
+            listenToMessages();
+            return () => {
+                stopListeningToMessages();
+            }
         }
-    }, [selectedUser]);
+    }, [selectedUser,listenToMessages,getMessages,messages]);
+
 
     return (
         <div className="flex-1 flex flex-col bg-gray-800">
@@ -29,8 +36,9 @@ const ChatBox = () => {
                 />
                 <div className="ml-3">
                     <div className="font-semibold text-white">{selectedUser?.username}</div>
-                    <div className="text-sm text-gray-400">Active now</div>
+                    <div className="text-sm text-gray-400">{onlineUsers?.[selectedUser?._id] ? 'Active now' : 'Offline'}</div>
                 </div>
+                <X className="ml-auto text-white cursor-pointer" onClick={() => selectUser(null)}/>
             </div>
 
             {/* Messages Section */}
@@ -38,6 +46,7 @@ const ChatBox = () => {
                 {messages.map((msg) => (
                     <div
                         key={msg._id}
+                        ref={chatEndRef}
                         className={`flex ${
                             msg.senderId === selectedUser?._id ? 'justify-start' : 'justify-end'
                         }`}
@@ -56,7 +65,7 @@ const ChatBox = () => {
                         </div>
                     </div>
                 ))}
-                <div ref={chatEndRef} />
+                <div  />
             </div>
 
             {/* Message Input */}

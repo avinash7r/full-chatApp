@@ -9,7 +9,7 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   
-  const { authCheck } = useAuthStore()
+  const { authCheck,login } = useAuthStore()
 
   const validateForm = () => {
     if (!email) {
@@ -26,14 +26,10 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!validateForm()) return
-
     try {
-      const res = await axiosInstance.post('/auth/login', { email, password })
-      await authCheck()
-      toast.success("Logged in successfully")
+      await login({email,password})
     } catch (error) {
-      toast.error("Login failed")
-      console.log(error)
+      
     }
   }
 

@@ -14,14 +14,13 @@ import Setting from './pages/Setting.jsx'
 import { useEffect } from 'react'
 
 function App() {
-  const {authUser,authCheck,isCheckingAuth} = useAuthStore()
+  const {authUser,authCheck,isCheckingAuth,onlineUsers} = useAuthStore()
 
   useEffect(() => {
     authCheck();
   },[authCheck]);
 
-  useEffect(() => {
-  }, [authUser]);
+  console.log(onlineUsers);
 
   if(isCheckingAuth) {
     return (

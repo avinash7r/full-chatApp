@@ -1,6 +1,7 @@
 import { get } from "mongoose";
 import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
+import {io,getReciversSocketId} from "../lib/socket.js";
 
 export const getUserForSidebar = async (req, res) => {
     try {
@@ -48,6 +49,10 @@ export const sendMessage = async (req, res) => {
             media:mediaUrl
         })
         await newMessage.save();
+        const reciversSocketId=getReciversSocketId(receiverId);
+        if(reciversSocketId){
+            io.to(reciversSocketId).emit("newMessage",newMessage);
+        }
         res.status(200).json(newMessage);
     } catch (error) {
         console.error(`Error: ${error.message}`);

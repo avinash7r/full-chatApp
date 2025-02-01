@@ -1,0 +1,22 @@
+{
+  "name": "full-chatapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build":"npm install --prefix client && npm install --prefix server && npm run build --prefix client",
+    "start": "npm run start --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avinash7r/full-chatApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/avinash7r/full-chatApp/issues"
+  },
+  "homepage": "https://github.com/avinash7r/full-chatApp#readme",
+  "description": ""
+}

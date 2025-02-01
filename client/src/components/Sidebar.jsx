@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useMsgStore } from '../store/useMsgStore';
 import { User } from 'lucide-react';
-
+import { useAuthStore } from '../store/useAuthStore';
 const Sidebar = () => {
     const { getUsers, users, selectedUser, selectUser } = useMsgStore();
+    const { onlineUsers } = useAuthStore();
+    const [onlineUsersOnly,setOnlineUsersOnly]=useState(false)
     useEffect(() => {
         getUsers();
     }, [getUsers]);
-    const [onlineUsers, setOnlineUsers] = useState([]);
-
+    const filteredUsers= onlineUsersOnly ? users.filter((user) => onlineUsers.includes(user._id)) : users;
     return (
         <aside className="h-full w-64 bg-gray-900 text-white flex flex-col">
             <div className="flex items-center justify-between p-4 border-b border-gray-700">
@@ -16,11 +17,15 @@ const Sidebar = () => {
                     <User className="text-gray-300" />
                     <span className="font-semibold">Contacts</span>
                 </div>
+                <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={onlineUsersOnly} onChange={(e) => setOnlineUsersOnly(e.target.checked)} className="text-gray-300" />
+                    <span className="text-sm">Online only</span>
+                </label>
             </div>
             <div className="flex-1 overflow-y-auto">
-                {users.map((user) => {
+                {filteredUsers.map((user) => {
                     const isSelected = user._id === selectedUser?._id;
-                    const isOnline = onlineUsers.some((u) => u._id === user._id);
+                    const isOnline = onlineUsers.includes(user._id)
                     return (
                         <div
                             key={user._id}
@@ -48,7 +53,7 @@ const Sidebar = () => {
                         </div>
                     );
                 })}
-                {users.length === 0 && (
+                {filteredUsers.length === 0 && (
                     <div className="text-center text-gray-500 py-4">No users available</div>
                 )}
             </div>

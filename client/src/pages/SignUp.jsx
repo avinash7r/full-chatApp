@@ -3,16 +3,14 @@ import { Link } from 'react-router-dom'
 import { axiosInstance } from '../lib/axiosInstance.js'
 import { useAuthStore } from '../store/useAuthStore.js'
 const SignUp = () => {
-  const { authCheck } = useAuthStore()
+  const { authCheck,signUp } = useAuthStore()
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res =await axiosInstance.post('/auth/register', { username, email, password })
-      console.log(res)
-      await authCheck()
+      await signUp({username,email,password})
     } catch (error) {
       console.log(error)
     }

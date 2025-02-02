@@ -6,13 +6,7 @@ import { useAuthStore } from '../store/useAuthStore';
 const ChatBox = () => {
     const { messages, selectedUser, getMessages,selectUser,listenToMessages,stopListeningToMessages } = useMsgStore();
     const {onlineUsers}=useAuthStore()
-    const chatEndRef = useRef(null);
 
-    useEffect(() => {
-        if (chatEndRef.current) {
-            chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [messages]);
 
     useEffect(() => {
         if (selectedUser?._id) {
@@ -46,7 +40,6 @@ const ChatBox = () => {
                 {messages.map((msg) => (
                     <div
                         key={msg._id}
-                        ref={chatEndRef}
                         className={`flex ${
                             msg.senderId === selectedUser?._id ? 'justify-start' : 'justify-end'
                         }`}

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Full ChatApp 💬
 
 ## Overview
@@ -201,4 +200,3 @@ full-chatApp/
 Avinash - [GitHub Profile](https://github.com/avinash7r)
 
 Project Link: [https://github.com/avinash7r/full-chatApp](https://github.com/avinash7r/full-chatApp)
->>>>>>> 0851bd5771b1d62c7ba948876cd94920bccfb59e
